@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>แบบยื่นคำร้องขอขึ้นรถรับ–ส่ง - วิทยาลัยเทคโนโลยีพังโคนพณิชยการ</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <style>
+    :root{ --pc-blue:#0d6efd; }
+    body{ font-family: "Prompt", sans-serif; background:#f5f8ff; }
+    .brand-bar{ background:var(--pc-blue); color:white; }
+    .prompt-thin {
+  	font-family: "Prompt", sans-serif;
+  	font-weight: 100;
+  	font-style: normal;
+	}
+    .section-title{ font-family: "Prompt", sans-serif; font-weight:700; color:#0d47a1; }
+    .req::after{ content:" *"; color:#dc3545; }
+
+    /* ====== A4 Printable Canvas (Hidden until export) ====== */
+    #pdfCanvas{
+      position:relative; width:210mm; min-height:297mm; background:#fff; color:#000;
+      padding:14mm 16mm; box-sizing:border-box; margin:auto; display:none;
+      font-family: "TH Sarabun New", "Sarabun", Tahoma, Arial, sans-serif; line-height:1.5; font-size:14.5pt;
+    }
+    /* Header layout to match sample exactly */
+    .pdf-header{ display:flex; align-items:flex-start; justify-content:space-between; border-bottom:1px solid #000; padding-bottom:4mm; margin-bottom:4mm; }
+    .pdf-header .logo-left img{ width:22mm; height:22mm; object-fit:contain; margin-top:2mm; }
+    .pdf-header .title-center{ text-align:center; flex:1; }
+    .pdf-header .title-center h1,.pdf-header .title-center h2{ margin:0; font-weight:700; }
+    .pdf-header .title-center h1{ font-size:18pt; }
+    .pdf-header .title-center h2{ font-size:16pt; }
+    .pdf-header .info-right{ text-align:right; min-width:60mm; margin-top:2mm; font-size:14pt; }
+
+    /* Lines for fillable areas (no dots floating above) */
+    .line{ display:inline-block; border-bottom:1px solid #000; min-width:18mm; }
+    .line.short{ min-width:22mm; }
+    .line.mid{ min-width:22mm; }
+    .line.long{ min-width:55mm; }
+
+    .indent{ text-indent:8mm; }
+    .tight{ line-height:1.00; }
+
+    .sig-block{ margin-top:10mm; text-align:center; }
+    .sig-line{ border-bottom:1px solid #000;min-width:20mm; margin:0 25mm 1mm; }
+    .sig-name{ margin:0 20mm; }
+    .sig-name .parens{ display:inline-block; border-bottom:1px solid #000; min-width:45mm; text-align:center; }
+    .sig-pos{ margin:1mm 20mm 0; }
+    .sig-pos .posline{ display:inline-block; border-bottom:1px solid #000; min-width:45mm; text-align:center; }
+
+    @media print { body{ background:#fff; } #pdfCanvas{ display:block; } }
+  </style>
+</head>
+<body>
+  <!-- ===== Top Blue Bar ===== -->
+  <div class="brand-bar py-3">
+    <div class="container d-flex align-items-center gap-3">
+      <i class="bi bi-bus-front-fill fs-3"></i>
+      <div>
+        <div class="fw-bold">ระบบกรอกแบบฟอร์มขึ้นรถรับ–ส่ง (ภาคเรียนที่ 2/2568)</div>
+        <div class="small">วิทยาลัยเทคโนโลยีพังโคนพณิชยการ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== App Card ===== -->
+  <div class="container my-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="section-title mb-0"><i class="bi bi-ui-checks-grid me-2"></i>กรอกข้อมูลผู้ยื่นคำร้อง</h3>
+          <div class="text-muted small">กรุณากรอกข้อมูลให้ถูกต้องและครบถ้วน ข้อมูลไหนที่ไม่มีให้นักศึกษาใส่เครื่องหมาย - </div>
+        </div>
+
+        <!-- Removed logo upload as requested -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">เขียนที่</label>
+            <input type="text" class="form-control" id="writeAt" value="วิทยาลัยเทคโนโลยีพังโคนพณิชยการ" readonly>
+          </div>
+          <div class="col-md-2">
+            <label class="form">วัน<label>
+            <input class="form-control" id="day"$1 readonly>
+          </div>
+          <div class="col-md-2">
+            <label class="form">เดือน<label>
+            <input class="form-control" id="month"$1 readonly>
+          </div>
+          <div class="col-md-2">
+            <label class="form">พ.ศ.<label>
+            <input class="form-control" id="year"$1 readonly>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label req">คำนำหน้า ชื่อ–สกุล ผู้ยื่นคำร้อง</label>
+            <input class="form-control" id="studentName" placeholder="นาย/นาง/นางสาว ชื่อ–สกุล">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label req">รหัสประจำตัว</label>
+            <input class="form-control" id="studentId" placeholder="20132">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label req">ประเภทวิชา</label>
+            <select class="form-select" id="programType">
+              <option value="">— เลือกประเภทวิชา —</option>
+              <option>บริหารธุรกิจ</option>
+              <option>ช่างอุตสาหกรรม</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label req">สาขาวิชา</label>
+            <select class="form-select" id="major">
+              <option value="">— เลือกสาขาวิชา —</option>
+              <option>สาขาการบัญชี</option>
+              <option>สาขาภาษาต่างประเทศ</option>
+              <option>สาขาเทคโนโลยีธุรกิจดิจิทัล</option>
+              <option>สาขาการโรงแรม</option>
+              <option>สาขาช่างยนต์</option>
+              <option>สาขาไฟฟ้า</option>
+              <option>สาขาอิเลกทรอนิกส์</option>
+              <option>สาขาการจัดการธุรกิจค้าปลีก</option>
+              <option>สาขาการจัดการโลจิสติกส์</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">สาขางาน</label>
+            <input class="form-control" id="minor" placeholder="ถ้ามี">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">ระดับชั้น</label>
+            <input class="form-control" id="level" placeholder="ปวช./ปวส.">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">ห้อง</label>
+            <input class="form-control" id="classroom" placeholder="เช่น 1/5">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">เบอร์โทรนักเรียน</label>
+            <input class="form-control" id="studentPhone">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">เบอร์โทรผู้ปกครอง</label>
+            <input class="form-control" id="parentPhone">
+          </div>
+
+          <div class="col-12"><label class="form-label">จุดขึ้นรถ (ไป–กลับ)</label></div>
+          <div class="col-md-6">
+            <input class="form-control mb-2" id="addrHouse" placeholder="บ้าน">
+            <input class="form-control mb-2" id="addrTambon" placeholder="ตำบล">
+            <input class="form-control mb-2" id="addrAmphoe" placeholder="อำเภอ">
+            <input class="form-control" id="addrProvince" placeholder="จังหวัด">
+          </div>
+          <div class="col-md-6">
+            <div class="alert alert-info py-2"><i class="bi bi-info-circle me-2"></i>ช่วงภาคเรียน 2/2568 (พ.ย. 2568 – มี.ค. 2569)</div>
+          </div>
+        </div>
+
+        <hr class="my-4"/>
+        <h5 class="section-title"><i class="bi bi-people-fill me-2"></i>คำยินยอมของผู้ปกครอง</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label req">ชื่อ–สกุล ผู้ปกครอง</label>
+            <input class="form-control" id="guardianName" placeholder="นาย/นาง/นางสาว ชื่อ–สกุล">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label req">ความเกี่ยวข้อง</label>
+            <div class="input-group">
+              <select class="form-select" id="relation">
+                <option value="บิดา">บิดา</option>
+                <option value="มารดา">มารดา</option>
+                <option value="อื่น ๆ">อื่น ๆ</option>
+              </select>
+              <input class="form-control" id="relationOther" placeholder="ระบุ (ถ้าเลือก อื่น ๆ)">
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button id="btnSave" class="btn btn-primary"><i class="bi bi-file-earmark-arrow-down me-1"></i>บันทึกเป็น PDF</button>
+          <button id="btnReset" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise me-1"></i>ล้างข้อมูล</button>
+        </div>
+      </div>
+    </div>
+    <div class="text-muted small mt-3">พัฒนาระบบโดย Sutthihpong Chimnet</div>
+  </div>
+
+  <!-- ====== Hidden A4 canvas for exporting ====== -->
+  <div id="pdfCanvas">
+    <div class="pdf-header">
+      <!-- Fixed logo at top-left (always visible) -->
+      <div class="logo-left">
+      </div>
+      <!-- Centered two-line title before divider -->
+      <div class="title-center">
+        <h2>แบบยื่นคำร้องประสงค์ขอขึ้นรถรับ–ส่ง ประจำทาง</h2>
+        <h2>วิทยาลัยเทคโนโลยีพังโคนพณิชยการ</h2>
+      </div>
+      <!-- Write-at + date on the right (as shown in sample image) -->
+      <div class="info-right">
+        เขียนที่ วิทยาลัยเทคโนโลยีพังโคนพณิชยการ<br/>
+        วันที่ ...................... เดือน ................................. พ.ศ. ......................
+      </div>
+    </div>
+
+    <div class="tight">
+      เรื่อง แจ้งความประสงค์ขอขึ้นรถรับ–ส่ง ประจำทางภาคเรียนที่ 2/2568<br/>
+      เรียน ผู้อำนวยการวิทยาลัยเทคโนโลยีพังโคนพณิชยการ
+    </div>
+
+    <p class="indent tight" style="margin-top:3mm;">
+      ด้วยข้าพเจ้า <span id="wStudentName" class="line long"></span> รหัสประจำตัว <span id="wStudentId" class="line mid"></span>
+      ประเภทวิชา <span id="wProgramType" class="line long"></span>
+      สาขาวิชา <span id="wMajor" class="line long"></span>
+      สาขางาน <span id="wMinor" class="line mid"></span>
+      ระดับชั้น <span id="wLevel" class="line short"></span>
+      ห้อง <span id="wClassroom" class="line short"></span>
+    </p>
+
+    <p class="indent tight">
+      เบอร์โทรนักเรียน <span id="wStudentPhone" class="line long"></span>
+      เบอร์โทรผู้ปกครองที่ติดต่อได้สะดวก <span id="wParentPhone" class="line short"></span>
+    </p>
+
+    <p class="indent tight">
+      มีความประสงค์ขอขึ้นรถรับ–ส่ง ไป–กลับ ประจำทางของวิทยาลัยฯ ในภาคเรียนที่ 2/2568 (ระหว่างเดือน พฤศจิกายน 2568 – มีนาคม 2569)
+      ขึ้นรถโดยสาร ไป–กลับ จากจุดเริ่มต้น บ้าน <span id="wAddrHouse" class="line long"></span>
+      ตำบล <span id="wAddrTambon" class="line mid"></span>
+      อำเภอ <span id="wAddrAmphoe" class="line mid"></span>
+      จังหวัด <span id="wAddrProvince" class="line mid"></span>
+      ถึงวิทยาลัยเทคโนโลยีพังโคนพณิชยการ โดยยินยอมชำระค่าโดยสารประจำทางตามอัตราระยะทางที่วิทยาลัยฯ กำหนด ทุกวันที่ 25 ของเดือน
+    </p>
+
+    <p class="indent">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
+
+    <div class="sig-block">
+      <div class="line long"></div>
+      <div class="sig-name">( <span id="wSignStudent" class="parens"></span> ) นักเรียน / นักศึกษา</div>
+      <div class="sig-pos">วันที่ <span id="wDate2" class="posline"></span></div>
+    </div>
+
+    <div class="mt-3 fw-bold">1. คำยินยอมของผู้ปกครอง นักเรียน นักศึกษา</div>
+    <p class="indent tight">
+      ข้าพเจ้า <span id="wGuardianName" class="line long"></span>
+      เกี่ยวข้องเป็น <span id="wRelation" class="line short"></span>
+      <span id="wRelationOtherWrap" style="display:none;">(ระบุ <span id="wRelationOther" class="line mid"></span>)</span>
+      ยินยอมให้นักเรียน นักศึกษา <span id="wStudentName2" class="line long"></span>
+      รหัสประจำตัว <span id="wStudentId2" class="line mid"></span>
+      ขอขึ้นรถรับ–ส่ง ประจำทางภาคเรียนที่ 2/2568 โดยยินยอมชำระค่าโดยสารประจำทางตามอัตราระยะทางที่วิทยาลัยฯ กำหนด ทุกวันที่ 25 ของเดือน
+    </p>
+
+    <div class="sig-block">
+      <div class="line long"></div>
+      <div class="sig-name">( <span id="wSignGuardian" class="parens"></span> ) ผู้ปกครอง</div>
+      <div class="sig-pos">วันที่ <span id="wDate3" class="posline"></span></div>
+    </div>
+  </div>
+
+  <!-- ====== Scripts: html2canvas + jsPDF (no html2pdf.js) ====== -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    const val = (id)=> ( $(id)?.value ?? '' ).toString().trim();
+
+    // === Auto-set Bangkok date (locked) ===
+    function setBangkokDate(){
+      try{
+        const parts = new Intl.DateTimeFormat('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'long', year: 'numeric' }).formatToParts(new Date());
+        const get=(t)=>parts.find(p=>p.type===t)?.value||'';
+        const d=get('day'), m=get('month'), y=get('year');
+        if($('day')){ $('day').value=d; $('day').readOnly=true; $('day').setAttribute('readonly',''); }
+        if($('month')){ $('month').value=m; $('month').readOnly=true; $('month').setAttribute('readonly',''); }
+        if($('year')){ $('year').value=y; $('year').readOnly=true; $('year').setAttribute('readonly',''); }
+      }catch(e){ /* no-op */ }
+    }
+    setBangkokDate();
+
+    // Relation other visibility
+    $('relation').addEventListener('change', e=>{
+      const isOther = e.target.value === 'อื่น ๆ';
+      $('relationOther').disabled = !isOther;
+      if(!isOther) $('relationOther').value = '';
+    });
+    $('relationOther').disabled = true;
+
+    // Reset form
+    $('btnReset').addEventListener('click', ()=>{
+      document.querySelectorAll('input, select').forEach(el=>{
+        if(el.id==='writeAt') return; // locked
+        if(el.tagName.toLowerCase()==='select'){ el.selectedIndex=0; }
+        else el.value='';
+      });
+    });
+
+    function fillPdf(){
+      // Main
+      const sName = val('studentName');
+      const sId = val('studentId');
+      $('wStudentName').textContent = sName;
+      $('wStudentId').textContent = sId;
+      $('wProgramType').textContent = val('programType');
+      $('wMajor').textContent = val('major');
+      $('wMinor').textContent = val('minor');
+      $('wLevel').textContent = val('level');
+      $('wClassroom').textContent = val('classroom');
+      $('wStudentPhone').textContent = val('studentPhone');
+      $('wParentPhone').textContent = val('parentPhone');
+
+      $('wAddrHouse').textContent = val('addrHouse');
+      $('wAddrTambon').textContent = val('addrTambon');
+      $('wAddrAmphoe').textContent = val('addrAmphoe');
+      $('wAddrProvince').textContent = val('addrProvince');
+
+      // Sign blocks
+      $('wSignStudent').textContent = sName;
+      const dateStr = `${val('day')||''}/${val('month')||''}/${val('year')||''}`;
+      $('wDate2').textContent = dateStr;
+
+      const gName = val('guardianName');
+      const relation = val('relation');
+      const relOther = val('relationOther');
+      $('wGuardianName').textContent = gName;
+      $('wRelation').textContent = relation;
+      if(relation==='อื่น ๆ' && relOther){
+        $('wRelationOtherWrap').style.display = 'inline';
+        $('wRelationOther').textContent = relOther;
+      } else {
+        $('wRelationOtherWrap').style.display = 'none';
+        $('wRelationOther').textContent = '';
+      }
+      $('wStudentName2').textContent = sName;
+      $('wStudentId2').textContent = sId;
+      $('wSignGuardian').textContent = gName;
+      $('wDate3').textContent = dateStr;
+    }
+
+    async function exportPDF(){
+      fillPdf();
+      const canvas = $('pdfCanvas');
+      canvas.style.display = 'block';
+      const h2c = await html2canvas(canvas, { scale: 2, backgroundColor:'#ffffff' });
+      const img = h2c.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit:'mm', format:'a4' });
+      pdf.addImage(img, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+      pdf.save(`แบบคำร้องขึ้นรถรับส่ง_ภาคเรียน2_2568_${Date.now()}.pdf`);
+      canvas.style.display = 'none';
+    }
+
+    $('btnSave').addEventListener('click', exportPDF);
+  </script>
+</body>
+</html>
